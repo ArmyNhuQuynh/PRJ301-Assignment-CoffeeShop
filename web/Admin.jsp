@@ -13,6 +13,8 @@
     </head>
     <body>
         <h1>Wellcome </h1>
-        
+        <input type="submit" value="Add Product" name="btAction" />
+        <input type="submit" value="View Product" name="btAction" />
+        <input type="submit" value="Manage Order" name="btAction" />
     </body>
 </html>
