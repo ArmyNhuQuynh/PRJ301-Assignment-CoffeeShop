@@ -25,9 +25,7 @@
                     <thead>
                         <tr>
                             <th>Item Name</th>
-                            <th>Price</th>
                             <th>Quantity</th>
-                            <th>Sum</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -35,8 +33,6 @@
                     <c:forEach items="${CART.items}" var="item" varStatus="counter">
     <tr>
         <td>${item.itemName}</td> 
-        <td>${item.price}</td> 
-        <td>${item.value}</td> 
         <td>${item.value}</td> 
          <td><input type="checkbox" name="chkItem" value="${item.key}" /></td>
     </tr>

@@ -22,24 +22,6 @@
             <input type="submit" value="View your cart" name="btAction" />    
         </form>
         <form action="DispatchServlet" method="POST">
-            <input type="text" name="txtSearchValue" value="${param.txtSearchValue}" />
-            <input type="submit" value="Search" name="btAction" />
-            Male <input type="checkbox" name="chkCheck" value="ON" checked="checked"/><br>
-            Ko check <input type="checkbox" name="chkCheck" value="ON" checked="checked"/><br>
-            <input type="radio" name="rdoStatus" value="Singgle" />Singgle<br>
-            <input type="radio" name="rdoStatus" value="Cuoi" checked="checked"/>Cuoi<br>
-            <input type="radio" name="rdoStatus" value="Ly di" />pp<br>
-            combo<select name="123123">
-                <option>312312</option>
-                <option>312312312</option>
-            </select><br>
-            <select name="2131312" multiple="multiple">
-                <option>12312</option>
-                <option>12312321</option>
-            </select>
-        </form>
-        </form>
-        <form action="DispatchServlet" method="POST">
             <div class="container">
                 <div class="row">
                     <c:forEach var="dto" items="${product}" >
@@ -59,7 +41,7 @@
                                         <p>${dto.price}</p>
                                     </div>
                                     <form action="DispatchServlet">
-                                        <input type="hidden" name="txtItemId" value="${dto.itemId}" />
+                                        <input type="hidden" name="txtItemName" value="${dto.itemName}" />
                                         <input type="hidden" name="txtlastSearchValue" value="${param.txtSearchValue}" />
                                         <input type="submit" value="Add" name="btAction" />
                                     </form>

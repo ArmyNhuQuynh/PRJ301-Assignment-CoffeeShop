@@ -46,7 +46,7 @@ public class AddToCartServlet extends HttpServlet {
             }
 
             // Retrieve the item parameter from the request
-            String item = request.getParameter("txtItemId");
+            String item = request.getParameter("txtItemName");
 
             if (item != null && !item.trim().isEmpty()) {
                 // Add item to the cart
