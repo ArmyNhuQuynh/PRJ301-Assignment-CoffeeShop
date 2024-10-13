@@ -31,6 +31,21 @@ public class ItemsCart implements Serializable{
         
         // Increase quantity if item exists, or add new item
         items.put(item, items.getOrDefault(item, 0) + 1);
+        System.out.println(item);
+    }
+    
+    public void updateCart(String item, Integer value) {
+        if (item == null || item.trim().isEmpty()) {
+            return; // No null or empty items allowed
+        }
+        
+        if (this.items == null) {
+            this.items = new HashMap<>();
+        }
+        
+        // Increase quantity if item exists, or add new item
+        items.put(item, items.getOrDefault(item, 0) + 1);
+        System.out.println(item);
     }
     public void removeItemFromCart(String item) {
         if (item == null || item.trim().isEmpty() || items.isEmpty()) {

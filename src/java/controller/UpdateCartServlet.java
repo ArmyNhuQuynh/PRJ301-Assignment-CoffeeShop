@@ -5,7 +5,6 @@
  */
 package controller;
 
-import Cart.ItemsCart;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,15 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author DELL
  */
-@WebServlet(name = "AddToCartServlet", urlPatterns = {"/AddToCartServlet"})
-public class AddToCartServlet extends HttpServlet {
-    private final String HOME_PAGE="home.jsp";
+@WebServlet(name = "UpdateCartServlet", urlPatterns = {"/UpdateCartServlet"})
+public class UpdateCartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,27 +32,8 @@ public class AddToCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String lastSearchValue = request.getParameter("txtlastSearchValue");
-        String url=HOME_PAGE;
-        try {
-            HttpSession session = request.getSession(true);
-            ItemsCart cart = (ItemsCart) session.getAttribute("CART");
-
-            if (cart == null) {
-                cart = new ItemsCart(); // Create a new cart if none exists
-            }
-
-            // Retrieve the item parameter from the request
-            String item = request.getParameter("txtItemId");
-
-            if (item != null && !item.trim().isEmpty()) {
-                // Add item to the cart
-                cart.addItemToCart(item);
-                session.setAttribute("CART", cart);
-            url = "DispatchServlet?txtSearchValue="+lastSearchValue+"&btAction=Search";}
+        try (PrintWriter out = response.getWriter()) {
             
-        }finally{
-            response.sendRedirect(url);
         }
     }
 

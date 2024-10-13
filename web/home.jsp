@@ -22,6 +22,11 @@
             <input type="submit" value="View your cart" name="btAction" />    
         </form>
         <form action="DispatchServlet" method="POST">
+            <input type="submit" value="View your wishlist" name="btAction" />    
+        </form>
+        <form action="DispatchServlet" method="POST">
+            <input type="text" name="txtSearchValue" value="${param.txtSearchValue}" />
+            <input type="submit" value="Search" name="btAction" />
             <div class="container">
                 <div class="row">
                     <c:forEach var="dto" items="${product}" >
@@ -40,8 +45,8 @@
                                     <div class="price_quantity">
                                         <p>${dto.price}</p>
                                     </div>
-                                    <form action="DispatchServlet">
-                                        <input type="hidden" name="txtItemName" value="${dto.itemName}" />
+                                    <form action="DispatchServlet" method="post">
+                                        <input type="hidden" name="txtItemId" value="${dto.itemId}" />
                                         <input type="hidden" name="txtlastSearchValue" value="${param.txtSearchValue}" />
                                         <input type="submit" value="Add" name="btAction" />
                                     </form>
