@@ -53,7 +53,7 @@ public class DispatchServlet extends HttpServlet {
                url = SEARCH_CONTROLLER;
            }else if(button.equals("Add")){
                url = ADDTOCART_CONTROLLER;
-           }else if(button.equals("Remove Selected Items")){
+           }else if(button.equals("Remove item")){
                url = REMOVEFROMCART_CONTROLLER;
            }else if(button.equals("View your cart")){
                url = VIEW_YOUR_CART;

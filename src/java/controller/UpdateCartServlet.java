@@ -5,13 +5,16 @@
  */
 package controller;
 
+import Cart.ItemsCart;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -19,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "UpdateCartServlet", urlPatterns = {"/UpdateCartServlet"})
 public class UpdateCartServlet extends HttpServlet {
+
+    private final String VIEW_YOUR_CART = "checkOut.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,8 +37,27 @@ public class UpdateCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            
+        String item = request.getParameter("itemname");
+        String quantity = request.getParameter("itemvalue");
+        String url = VIEW_YOUR_CART;
+        try {
+            HttpSession session = request.getSession(false);
+            ItemsCart cart = (ItemsCart) session.getAttribute("CART");
+
+            if (cart == null) {
+                cart = new ItemsCart(); // Create a new cart if none exists
+            }
+
+            if (item != null && !item.trim().isEmpty()) {
+                // Add item to the cart
+                cart.updateCart(item, Integer.parseInt(quantity));
+                System.out.println("ra roi");
+                session.setAttribute("CART", cart);
+
+            }
+        } finally {
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
         }
     }
 

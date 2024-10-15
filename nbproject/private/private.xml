@@ -3,20 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/SearchItemsInCart.java</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/checkOut.jsp</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Items/ItemsDAO.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/error.jsp</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/UpdateCartServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/home.jsp</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/AddToCartServlet.java</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/DispatchServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/LoginServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Items/ItemsDTO.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Cart/ItemsCart.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/SearchServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/RemoveFromCartServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/myLib/DBHelper.java</file>
         </group>
     </open-files>
 </project-private>

@@ -20,32 +20,42 @@
         <c:if test="${not empty cart}">
             <c:set var="items" value="${cart.items}"/>
             <c:if test="${not empty items}">
-                <form action="DispatchServlet">
+                <form action="DispatchServlet" method="POST">
                     <table border="1">
                         <thead>
                             <tr>
                                 <th>Item Id</th>
                                 <th>Quantity</th>
-                                <th>Action</th>
+                                <th>Update</th>
+                                <th>Remove</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${CART.items}" var="item" varStatus="counter">
                                 <tr>
-                            <form action="DispatchServlet" >
-                                <td>${item.key}</td> 
-                                <input type="hidden" name="itemname" value="${item.key}"
-                                <td> <input type="text" name="itemvalue" value="${item.value}"</td>
-                                <td> <input type="submit" value="Update quantity" name="btAction" /> </td>
+                                    <form action="DispatchServlet">
+                                <td>
+                                ${item.key}
+                                <input type="hidden" name="itemname" value="${item.key}"/>
+                                </td> 
+                                
+                                <td>
+                                    <input type="text" name="itemvalue" value="${item.value}"/>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Update quantity" name="btAction" />
+                                </td>
+                                <td>
+                                    <input type="submit" value="Remove item" name="btAction" />
+                                </td>
                             </form>
-
                             </tr>
                         </c:forEach>
 
                         </tbody>
                     </table>
                     <label for="txtCheckOutName">Name*:</label>
-                    <input type="text" id="txtCheckOutName" name="txtCheckOutName" required /><br>
+                    <input type="text" id="txtCheckOutName" name="txtCheckOutName" /><br>
 
                     <label for="txtPhoneNumber">Phone Number:</label>
                     <input type="tel" id="txtPhoneNumber" name="txtPhoneNumber" /><br>
@@ -54,7 +64,19 @@
                     <input type="tel" id="txtLandlineNumber" name="txtLandlineNumber" /><br>
 
                     <input type="submit" value="Check out" name="btAction" />
+                    <button onclick="window.location.href='home.jsp"/>Add more item to Card</button>
                 </form>
+            </c:if>
+            <c:if test="${empty items}">
+                    <c:url var="url" value="DispatchServlet">
+                <c:param name="btAction" value="Search"/>
+                <c:param name="txtSearchValue" value=""/>
+
+            </c:url>
+            <h2>
+                No item in your card!!!
+            </h2>
+            <a href="${url}">Click here to return to shopping page</a>
             </c:if>
         </c:if>
         <c:if test="${empty cart}">

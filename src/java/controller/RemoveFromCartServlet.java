@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author DELL
  */
-@WebServlet(name = "AddToCartServlet", urlPatterns = {"/AddToCartServlet"})
+@WebServlet(name = "RemoveFromCartServlet", urlPatterns = {"/RemoveFromCartServlet"})
 public class RemoveFromCartServlet extends HttpServlet {
     private final String HOME_PAGE="home.jsp";
 
@@ -36,31 +36,27 @@ public class RemoveFromCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try { //1. cust goes to his carts place
+        try {
             HttpSession session = request.getSession(false);
             if(session != null){
-            //2. cust take his cart
+            
                  ItemsCart cart = (ItemsCart)session.getAttribute("CART");
                  if(cart != null){
-            //3. cust gets items
+            
                      Map<String, Integer> items = cart.getItems();
                      if(items != null){
-                   // 4. cust choose all remove items 
-                        String[] selectedItems = request.getParameterValues("chkItem");
-                        if(selectedItems != null){
-                             //5. cust remove all items 
-                             for(String item : selectedItems){
-                                 cart.removeItemFromCart(item);
-                             }//each item is processed
-                        }//user choose at lest one 
+                   
+                        String ItemName = request.getParameter("itemname");
+                        if(ItemName != null)
+                                 cart.removeItemFromCart(ItemName);
+                             }
+                        }
                        session.setAttribute("CART", cart);
-                    }// items has existed
-                }//cart has existed
-            }//carts place has existed
+                    }
         }finally {
-            //6.RErefesh by calling the previous function again (view cart) using URL Rewritting
+            
             String urlRewritting ="DispatchServlet"
-                    + "?btAction=View your card";
+                    + "?btAction=View your cart";
             response.sendRedirect(urlRewritting);
         }
     }

@@ -42,10 +42,14 @@ public class ItemsCart implements Serializable{
         if (this.items == null) {
             this.items = new HashMap<>();
         }
-        
+        if (value == 0) {
+            items.remove(item);
+        } else {
+            items.put(item, value);
+            System.out.println("vo roi ne");
+        }
         // Increase quantity if item exists, or add new item
-        items.put(item, items.getOrDefault(item, 0) + 1);
-        System.out.println(item);
+       
     }
     public void removeItemFromCart(String item) {
         if (item == null || item.trim().isEmpty() || items.isEmpty()) {
@@ -53,21 +57,11 @@ public class ItemsCart implements Serializable{
         }
 
         // Check if the item exists in the cart
-        if (items.containsKey(item)) {
-            int quantity = items.get(item);
-
-            if (quantity > 1) {
-                // Decrease quantity by 1
-                items.put(item, quantity - 1);
-            } else {
-                // Remove item if quantity is 1
+      
                 items.remove(item);
-            }
 
-            // If the cart is empty, reset the items map
             if (items.isEmpty()) {
                 items = null;
             }
-        }
     }
 }
