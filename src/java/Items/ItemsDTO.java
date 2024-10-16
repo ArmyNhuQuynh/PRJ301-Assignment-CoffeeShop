@@ -1,77 +1,85 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Items;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-/**
- *
- * @author DELL
- */
-public class ItemsDTO implements Serializable{
-    private int ItemId;
-    private String ItemName;
-    private int Price;
-    private boolean Status;
-    private String Image;
+public class ItemsDTO implements Serializable {
+    private int itemId;      // Use camelCase for variable names
+    private String itemName;
+    private int price;
+    private boolean status;
+    private String image;
 
+    // Default constructor
     public ItemsDTO() {
+        this.itemId = 0;         // Initialize to default values
+        this.itemName = "";      // Initialize to an empty string
+        this.price = 0;          // Initialize to zero
+        this.status = false;      // Initialize status as false
+        this.image = "";         // Initialize to an empty string
     }
 
-    public ItemsDTO(int ItemId, String ItemName, int Price, boolean Status, String Image) {
-        this.ItemId = ItemId;
-        this.ItemName = ItemName;
-        this.Price = Price;
-        this.Status = Status;
-        this.Image = Image;
+    // Parameterized constructor
+    public ItemsDTO(int itemId, String itemName, int price, boolean status, String image) {
+        this.itemId = itemId; 
+        this.itemName = itemName;
+        this.price = price;
+        this.status = status;
+        this.image = image;
     }
 
-    ItemsDTO(String ItemsID, String ItemName, int Price, Object object, Object object0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    // Getters and Setters
     public int getItemId() {
-        return ItemId;
+        return itemId;
     }
 
-    public void setItemId(int ItemId) {
-        this.ItemId = ItemId;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public String getItemName() {
-        return ItemName;
+        return itemName;
     }
 
-    public void setItemName(String ItemName) {
-        this.ItemName = ItemName;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public int getPrice() {
-        return Price;
+        return price;
     }
 
-    public void setPrice(int Price) {
-        this.Price = Price;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public boolean isStatus() {
-        return Status;
+        return status;
     }
 
-    public void setStatus(boolean Status) {
-        this.Status = Status;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getImage() {
-        return Image;
+        return image;
     }
 
-    public void setImage(String Image) {
-        this.Image = Image;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    
+    // Override equals and hashCode
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ItemsDTO itemsDTO = (ItemsDTO) obj;
+        return itemId == itemsDTO.itemId; // Compare based on itemId
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemId); // Generate hash based on itemId
+    }
 }

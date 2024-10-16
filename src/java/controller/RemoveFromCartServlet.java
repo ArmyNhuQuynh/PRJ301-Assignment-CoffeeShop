@@ -6,9 +6,13 @@
 package controller;
 
 import Cart.ItemsCart;
+import Items.ItemsDAO;
+import Items.ItemsDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +26,8 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "RemoveFromCartServlet", urlPatterns = {"/RemoveFromCartServlet"})
 public class RemoveFromCartServlet extends HttpServlet {
-    private final String HOME_PAGE="home.jsp";
+
+    private final String HOME_PAGE = "home.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,28 +41,29 @@ public class RemoveFromCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+         String itemId = request.getParameter("itemId"); // Assuming item ID is passed as a parameter
         try {
             HttpSession session = request.getSession(false);
-            if(session != null){
-            
-                 ItemsCart cart = (ItemsCart)session.getAttribute("CART");
-                 if(cart != null){
-            
-                     Map<String, Integer> items = cart.getItems();
-                     if(items != null){
-                   
-                        String ItemName = request.getParameter("itemname");
-                        if(ItemName != null)
-                                 cart.removeItemFromCart(ItemName);
-                             }
-                        }
-                       session.setAttribute("CART", cart);
-                    }
-        }finally {
-            
-            String urlRewritting ="DispatchServlet"
-                    + "?btAction=View your cart";
-            response.sendRedirect(urlRewritting);
+            if (session != null) {
+                ItemsCart cart = (ItemsCart) session.getAttribute("CART");
+
+                if (cart != null && itemId != null && !itemId.trim().isEmpty()) {
+                    // Create a temporary ItemsDTO to use for comparison
+                    ItemsDTO itemToRemove = new ItemsDTO();
+                    itemToRemove.setItemId(Integer.parseInt(itemId.trim())); // Set the ID of the item to remove
+
+                    // Remove the item from the cart
+                    cart.removeItemFromCart(itemToRemove); // Use the method from ItemsCart
+                    session.setAttribute("CART", cart); // Update the session with the modified cart
+                }
+            }
+        } catch (NumberFormatException e) {
+            Logger.getLogger(RemoveFromCartServlet.class.getName()).log(Level.SEVERE, "Invalid item ID format: " + itemId, e);
+        } catch (Exception ex) {
+            Logger.getLogger(RemoveFromCartServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            String urlRewriting = "DispatchServlet?btAction=View your cart";
+            response.sendRedirect(urlRewriting);
         }
     }
 

@@ -107,40 +107,42 @@ public class ItemsDAO implements Serializable{
             }
     }
     }
+        
       
-      public ItemsDTO SearchItemsFromCart (String ItemsID) throws ClassNotFoundException, SQLException{
-        Connection con = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        ItemsDTO result = null;
-        try{
-            con = DBHelper.getConnection();
-            String sql = "select ItemName, Price, "
-                    + "from Items "
-                    + "where ItemId = ?";
-            stm = con.prepareStatement(sql);
-            stm.setString(1,ItemsID) ;
+     public ItemsDTO GetItems(String ItemsID) throws ClassNotFoundException, SQLException {
+    Connection con = null;
+    PreparedStatement stm = null;
+    ResultSet rs = null;
+    ItemsDTO result = null;
+    try {
+        con = DBHelper.getConnection();
+        String sql = "SELECT Image, Price, ItemName FROM Items WHERE ItemId = ?";
+        stm = con.prepareStatement(sql);
+        stm.setInt(1, Integer.parseInt(ItemsID)); // Convert to int
+        
+        rs = stm.executeQuery();
+        
+        if (rs.next()) {
+            String itemName = rs.getString("ItemName");
+            int price = rs.getInt("Price");
+            String image = rs.getString("Image");
             
-            rs = stm.executeQuery();
-            
-            if(rs.next()){
-                String ItemName = rs.getString("ItemName");
-                int Price = rs.getInt("Price");
-                
-                result = new ItemsDTO(ItemsID, ItemName, Price, null, null);
-            }
-            
-        }finally{
-        if(rs!=null){
-                rs.close();
-            }
-            if(stm!=null){
-                stm.close();
-            }
-            if(con!=null){
-                con.close();
-            }
+            // Assuming ItemId should be an int, set it appropriately
+            int itemId = Integer.parseInt(ItemsID);
+            result = new ItemsDTO(itemId, itemName, price, true, image); // Use the correct constructor
+        }
+        
+    } finally {
+        if (rs != null) {
+            rs.close();
+        }
+        if (stm != null) {
+            stm.close();
+        }
+        if (con != null) {
+            con.close();
+        }
     }
-        return result;
-       }    
+    return result;
+}
 }

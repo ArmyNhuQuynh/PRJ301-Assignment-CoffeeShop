@@ -6,8 +6,10 @@
 package controller;
 
 import Cart.ItemsCart;
+import Items.ItemsDAO;
+import Items.ItemsDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +23,8 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "AddToCartServlet", urlPatterns = {"/AddToCartServlet"})
 public class AddToCartServlet extends HttpServlet {
-    private final String HOME_PAGE="home.jsp";
+
+    private final String HOME_PAGE = "home.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,25 +39,37 @@ public class AddToCartServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String lastSearchValue = request.getParameter("txtlastSearchValue");
-        String url=HOME_PAGE;
+        String url = HOME_PAGE;
         try {
-            HttpSession session = request.getSession(true);
-            ItemsCart cart = (ItemsCart) session.getAttribute("CART");
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                session = request.getSession(true);
+            }
 
+            ItemsCart cart = (ItemsCart) session.getAttribute("CART");
             if (cart == null) {
                 cart = new ItemsCart(); // Create a new cart if none exists
             }
 
-            // Retrieve the item parameter from the request
-            String item = request.getParameter("txtItemId");
+            String itemid = request.getParameter("txtItemId");
+            if (itemid != null && !itemid.trim().isEmpty()) {
+                ItemsDAO dao = new ItemsDAO();
+                ItemsDTO item = dao.GetItems(itemid);
 
-            if (item != null && !item.trim().isEmpty()) {
-                // Add item to the cart
-                cart.addItemToCart(item);
-                session.setAttribute("CART", cart);
-            url = "DispatchServlet?txtSearchValue="+lastSearchValue+"&btAction=Search";}
-            
-        }finally{
+                if (item != null) {
+                    cart.addItemToCart(item);
+                    session.setAttribute("CART", cart);
+                    url = "DispatchServlet?txtSearchValue=" + lastSearchValue + "&btAction=Search";
+                } else {
+                    log("AddToCartServlet _ No item found with ID: " + itemid);
+                }
+            } else {
+                log("AddToCartServlet _ Invalid itemid: " + itemid);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            log("AddToCartServlet _ Exception: ", e);
+            url = "error.jsp";
+        } finally {
             response.sendRedirect(url);
         }
     }

@@ -6,8 +6,11 @@
 package controller;
 
 import Cart.ItemsCart;
+import Items.ItemsDAO;
+import Items.ItemsDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,33 +37,58 @@ public class UpdateCartServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String item = request.getParameter("itemname");
-        String quantity = request.getParameter("itemvalue");
+        String itemId = request.getParameter("itemid");
+        String quantityParam = request.getParameter("itemvalue");
         String url = VIEW_YOUR_CART;
+
         try {
             HttpSession session = request.getSession(false);
-            ItemsCart cart = (ItemsCart) session.getAttribute("CART");
+            if (session == null) {
+                request.setAttribute("errorMessage", "Session has expired. Please log in again.");
+                url = "login.jsp"; // Redirect to login or home page
+            } else {
+                ItemsCart cart = (ItemsCart) session.getAttribute("CART");
 
-            if (cart == null) {
-                cart = new ItemsCart(); // Create a new cart if none exists
-            }
+                // Create a new cart if it doesn't exist
+                if (cart == null) {
+                    cart = new ItemsCart();
+                    session.setAttribute("CART", cart);
+                }
 
-            if (item != null && !item.trim().isEmpty()) {
-                // Add item to the cart
-                cart.updateCart(item, Integer.parseInt(quantity));
-                System.out.println("ra roi");
-                session.setAttribute("CART", cart);
+                if (itemId != null && !itemId.trim().isEmpty() && quantityParam != null) {
+                    try {
+                        int quantity = Integer.parseInt(quantityParam);
 
+                        // Fetch the item from the database
+                        ItemsDAO dao = new ItemsDAO();
+                        ItemsDTO item = dao.GetItems(itemId);
+
+                        if (item != null) {
+                            if (quantity >= 0) {
+                                cart.updateCart(item, quantity);
+                                session.setAttribute("CART", cart);
+                            } else {
+                                request.setAttribute("errorMessage", "Quantity cannot be negative.");
+                            }
+                        } else {
+                            request.setAttribute("errorMessage", "Item not found.");
+                        }
+                    } catch (NumberFormatException e) {
+                        request.setAttribute("errorMessage", "Invalid quantity format.");
+                    } catch (ClassNotFoundException | SQLException e) {
+                        log("UpdateCartServlet - Exception: " + e.getMessage(), e);
+                        request.setAttribute("errorMessage", "An error occurred while updating the cart.");
+                    }
+                }
             }
         } finally {
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

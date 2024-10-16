@@ -1,67 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cart;
 
+import Items.ItemsDTO;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author DELL
- */
-public class ItemsCart implements Serializable{
-   private Map<String, Integer> items;
+public class ItemsCart implements Serializable {
+    private Map<ItemsDTO, Integer> items = new HashMap<>();
 
-    public Map<String, Integer> getItems() {
+    public Map<ItemsDTO, Integer> getItems() {
         return items;
     }
 
-    public void addItemToCart(String item) {
-        if (item == null || item.trim().isEmpty()) {
-            return; // No null or empty items allowed
+    public void addItemToCart(ItemsDTO item) {
+        if (item == null) {
+            return; 
         }
         
-        if (this.items == null) {
-            this.items = new HashMap<>();
-        }
-        
-        // Increase quantity if item exists, or add new item
         items.put(item, items.getOrDefault(item, 0) + 1);
-        System.out.println(item);
     }
     
-    public void updateCart(String item, Integer value) {
-        if (item == null || item.trim().isEmpty()) {
-            return; // No null or empty items allowed
+    public void updateCart(ItemsDTO item, Integer quantity) {
+        if (item == null || quantity == null || quantity < 0) {
+            return;
         }
         
-        if (this.items == null) {
-            this.items = new HashMap<>();
-        }
-        if (value == 0) {
+        if (quantity == 0) {
             items.remove(item);
         } else {
-            items.put(item, value);
-            System.out.println("vo roi ne");
+            items.put(item, quantity);
         }
-        // Increase quantity if item exists, or add new item
-       
     }
-    public void removeItemFromCart(String item) {
-        if (item == null || item.trim().isEmpty() || items.isEmpty()) {
-            return; // Invalid item or empty cart
+    
+    public void removeItemFromCart(ItemsDTO item) {
+        if (item == null || items.isEmpty()) {
+            return; 
         }
-
-        // Check if the item exists in the cart
-      
-                items.remove(item);
-
-            if (items.isEmpty()) {
-                items = null;
-            }
+        
+        items.remove(item);
     }
 }
