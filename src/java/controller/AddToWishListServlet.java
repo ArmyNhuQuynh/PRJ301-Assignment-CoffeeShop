@@ -5,28 +5,24 @@
  */
 package controller;
 
-import Cart.ItemsCart;
-import Items.ItemsDAO;
-import Items.ItemsDTO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author DELL
  */
-@WebServlet(name = "RemoveFromCartServlet", urlPatterns = {"/RemoveFromCartServlet"})
-public class RemoveFromCartServlet extends HttpServlet {
-
+@WebServlet(name = "AddToWishListServlet", urlPatterns = {"/AddToWishListServlet"})
+public class AddToWishListServlet extends HttpServlet {
+    
     private final String HOME_PAGE = "home.jsp";
 
     /**
@@ -38,34 +34,56 @@ public class RemoveFromCartServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-         String itemId = request.getParameter("itemid"); // Assuming item ID is passed as a parameter
-        try {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                ItemsCart cart = (ItemsCart) session.getAttribute("CART");
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    String lastSearchValue = request.getParameter("txtlastSearchValue");
+    String url = HOME_PAGE;
+    
+    try {
+        String itemId = request.getParameter("txtItemId");
+        
+        // Validate that itemId is not null or empty before processing
+        if (itemId == null || itemId.trim().isEmpty()) {
+            // Redirect to the home page or display an error if itemId is invalid
+            url = HOME_PAGE; // Or any other error handling you prefer
+            return; // Skip the rest of the code if itemId is not valid
+        }
+        
+        Cookie[] cookies = request.getCookies();
+        Cookie wishlistCookie = null;
 
-                if (cart != null && itemId != null && !itemId.trim().isEmpty()) {
-                    // Create a temporary ItemsDTO to use for comparison
-                    ItemsDTO itemToRemove = new ItemsDTO();
-                    itemToRemove.setItemId(Integer.parseInt(itemId.trim())); // Set the ID of the item to remove
-
-                    // Remove the item from the cart
-                    cart.removeItemFromCart(itemToRemove); // Use the method from ItemsCart
-                    session.setAttribute("CART", cart); // Update the session with the modified cart
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("wishlist".equals(cookie.getName())) {
+                    wishlistCookie = cookie;
+                    break;
                 }
             }
-        } catch (NumberFormatException e) {
-            Logger.getLogger(RemoveFromCartServlet.class.getName()).log(Level.SEVERE, "Invalid item ID format: " + itemId, e);
-        } catch (Exception ex) {
-            Logger.getLogger(RemoveFromCartServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            String urlRewriting = "DispatchServlet?btAction=View your cart";
-            response.sendRedirect(urlRewriting);
         }
+        
+        if (wishlistCookie == null) {
+            // Create new wishlist cookie
+            wishlistCookie = new Cookie("wishlist", itemId);
+            wishlistCookie.setMaxAge(60 * 3); // 3 minutes
+        } else {
+            // Append to existing cookie value
+            String[] items = wishlistCookie.getValue().split(",");
+            boolean itemExists = Arrays.asList(items).contains(itemId);
+
+            if (!itemExists) {
+                wishlistCookie.setValue(wishlistCookie.getValue() + "," + itemId);
+            }
+        }
+
+        response.addCookie(wishlistCookie);
+        url = "DispatchServlet?txtSearchValue=" + lastSearchValue + "&btAction=Search";
+        
+    } finally {
+        response.sendRedirect(url);
     }
+}
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

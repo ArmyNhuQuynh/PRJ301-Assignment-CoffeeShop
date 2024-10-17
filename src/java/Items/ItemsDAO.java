@@ -109,12 +109,16 @@ public class ItemsDAO implements Serializable{
     }
         
       
-     public ItemsDTO GetItems(String ItemsID) throws ClassNotFoundException, SQLException {
+    public ItemsDTO GetItems(String ItemsID) throws ClassNotFoundException, SQLException {
     Connection con = null;
     PreparedStatement stm = null;
     ResultSet rs = null;
     ItemsDTO result = null;
     try {
+        if (ItemsID == null || ItemsID.trim().isEmpty()) {
+            throw new IllegalArgumentException("ItemsID cannot be null or empty");
+        }
+
         con = DBHelper.getConnection();
         String sql = "SELECT Image, Price, ItemName FROM Items WHERE ItemId = ?";
         stm = con.prepareStatement(sql);
@@ -127,9 +131,8 @@ public class ItemsDAO implements Serializable{
             int price = rs.getInt("Price");
             String image = rs.getString("Image");
             
-            // Assuming ItemId should be an int, set it appropriately
             int itemId = Integer.parseInt(ItemsID);
-            result = new ItemsDTO(itemId, itemName, price, true, image); // Use the correct constructor
+            result = new ItemsDTO(itemId, itemName, price, true, image);
         }
         
     } finally {

@@ -21,7 +21,7 @@
         <c:if test="${not empty cart}">
             <c:set var="items" value="${cart.items}"/>
             <c:if test="${not empty items}">
-                <form action="DispatchServlet" method="POST">
+                
                     <table border="1">
                         <thead>
                             <tr>
@@ -35,6 +35,7 @@
                         <tbody>
                             <c:set var="sum" value="0" scope="page"/>
                             <c:forEach items="${cart.items}" var="entry"> <!-- Assume entry is a Map entry -->
+                                <form action="DispatchServlet" method="POST">
                                 <c:set var="item" value="${entry.key}"/> <!-- Key is the ItemsDTO object -->
                                 <c:set var="quantity" value="${entry.value}"/> <!-- Value is the quantity -->
 
@@ -54,6 +55,7 @@
                                         <input type="submit" value="Remove item" name="btAction" />
                                     </td>
                                 </tr>
+                                </form>
                             </c:forEach>
                             <tr>
                                 <td colspan="3"><strong>Total:</strong></td>
@@ -73,7 +75,7 @@
 
                     <input type="submit" value="Check out" name="btAction" />
                     <button type="button" onclick="window.location.href = 'home.jsp'">Add more item to Cart</button>
-                </form>
+                
             </c:if>
             <c:if test="${empty items}">
                 <c:url var="url" value="DispatchServlet">

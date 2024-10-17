@@ -29,6 +29,8 @@ public class DispatchServlet extends HttpServlet {
      private final String ADDTOCART_CONTROLLER = "AddToCartServlet";
      private final String REMOVEFROMCART_CONTROLLER = "RemoveFromCartServlet";
      private final String UPDATECART_CONTROLLER = "UpdateCartServlet";
+     private final String ADDTOWISHLIST_CONTROLLER = "AddToWishListServlet";
+     private final String VIEWWISHLIST_CONTROLLER = "ViewWishListServlet";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -51,7 +53,7 @@ public class DispatchServlet extends HttpServlet {
                url = LOGIN_CONTROLLER;
            }else if(button.equals("Search")){
                url = SEARCH_CONTROLLER;
-           }else if(button.equals("Add")){
+           }else if(button.equals("Add to cart")){
                url = ADDTOCART_CONTROLLER;
            }else if(button.equals("Remove item")){
                url = REMOVEFROMCART_CONTROLLER;
@@ -59,6 +61,10 @@ public class DispatchServlet extends HttpServlet {
                url = VIEW_YOUR_CART;
            }else if(button.equals("Update quantity")){
                url = UPDATECART_CONTROLLER;
+           }else if(button.equals("Add to wish list")){
+               url = ADDTOWISHLIST_CONTROLLER;
+           }else if(button.equals("View your wish list")){
+               url = VIEWWISHLIST_CONTROLLER;
            }
         }finally{
             RequestDispatcher rd = request.getRequestDispatcher(url);

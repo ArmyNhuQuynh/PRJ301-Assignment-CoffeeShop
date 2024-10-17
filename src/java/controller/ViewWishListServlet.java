@@ -10,12 +10,12 @@ import Items.ItemsDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author DELL
  */
-@WebServlet(name = "SearchItemsInCart", urlPatterns = {"/SearchItemsInCart"})
-public class SearchItemsInCart extends HttpServlet {
-     private final String ERROR_PAGE = "error.jsp";
+@WebServlet(name = "ViewWishListServlet", urlPatterns = {"/ViewWishListServlet"})
+public class ViewWishListServlet extends HttpServlet {
+        private final String HOME_PAGE = "home.jsp";
+        private final String VIEW_WISH_LIST = "viewWishList.jsp";
+
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,36 +40,47 @@ public class SearchItemsInCart extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String searchValue = request.getParameter("txtSearchValue");
-        String url = ERROR_PAGE;
-        try {
-            ItemsDAO dao = new ItemsDAO();
-            if (!searchValue.trim().isEmpty()) {
-                dao.SearchItems(searchValue);
-            }else{
-                dao.ShowAllItems();
-            }
-            List<ItemsDTO> result = dao.getProducts();
-
-            request.setAttribute("product", result);
-
-          
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-
-        } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            out.close();
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    String url = HOME_PAGE;
+    
+    try  {
+        Cookie[] arr = request.getCookies();
+        ArrayList<ItemsDTO> result = new ArrayList<>();
         
+        if (arr != null) {
+            ItemsDAO dao = new ItemsDAO(); // Create DAO instance outside the loop
+
+            for (Cookie c : arr) {
+                if ("wishlist".equals(c.getName())) {
+                    String ids = c.getValue();
+                    String[] listid = ids.split(",");
+                    
+                    if (listid != null && listid.length > 0) {
+                        for (String id : listid) {
+                            // Check if the id is valid before processing
+                            if (id != null && !id.trim().isEmpty()) {
+                                ItemsDTO item = dao.GetItems(id);
+                                if (item != null) {
+                                    result.add(item);
+                                }
+                            }
+                        }
+                        request.setAttribute("listItemLike", result);
+                    }
+                }
+            }
         }
+        
+        url = VIEW_WISH_LIST;
+    } catch (ClassNotFoundException | SQLException ex) {
+        Logger.getLogger(ViewWishListServlet.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        // Use forward instead of sendRedirect to keep request attributes
+        request.getRequestDispatcher(url).forward(request, response);
     }
+}
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
