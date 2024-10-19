@@ -35,14 +35,14 @@
                 </c:forEach>
             </tbody>
         </table>
-        <button type="button" onclick="window.location.href = 'home.jsp'">Add more items to wish list</button>
+        <button type="button" onclick="window.location.href = 'home.+'">Add more items to wish list</button>
     </c:if>
     <c:if test="${empty cart}">
         <c:url var="url" value="DispatchServlet">
             <c:param name="btAction" value="Search"/>
             <c:param name="txtSearchValue" value=""/>
         </c:url>
-        <h2>No items in your cart!</h2>
+        <h2>No items in your wish list!</h2>
         <a href="${url}">Click here to return to the shopping page</a>
     </c:if>
 </body>
