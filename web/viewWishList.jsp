@@ -35,7 +35,7 @@
                 </c:forEach>
             </tbody>
         </table>
-        <button type="button" onclick="window.location.href = 'home.+'">Add more items to wish list</button>
+        <button type="button" onclick="window.location.href = 'home.jsp'">Add more items to wish list</button>
     </c:if>
     <c:if test="${empty cart}">
         <c:url var="url" value="DispatchServlet">

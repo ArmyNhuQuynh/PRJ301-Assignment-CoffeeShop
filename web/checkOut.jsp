@@ -21,78 +21,93 @@
         <c:if test="${not empty cart}">
             <c:set var="items" value="${cart.items}"/>
             <c:if test="${not empty items}">
-                
-                    <table border="1">
-                        <thead>
+
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:set var="sum" value="0" scope="page"/>
+                        <c:forEach items="${cart.items}" var="entry"> <!-- Assume entry is a Map entry -->
+                        <form action="DispatchServlet" method="POST">
+                            <c:set var="item" value="${entry.key}"/> <!-- Key is the ItemsDTO object -->
+                            <c:set var="quantity" value="${entry.value}"/> <!-- Value is the quantity -->
+
+                            <c:set var="totalPrice" value="${item.price * quantity}"/> <!-- Calculate total price for current item -->
+                            <c:set var="sum" value="${sum + totalPrice}" scope="page"/> <!-- Update sum -->
+
                             <tr>
-                                <th>Name</th>
-                                <th>Image</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Action</th>
+                                <td>${item.itemName}</td> <!-- Use the correct property name -->
+                                <td><img src="${item.image}" alt="${item.itemName}" width="100" height="100"/></td> <!-- Use the correct property name -->
+                                <td>
+                                    <input type="number" name="itemvalue" value="${quantity}" />
+                                    <input type="hidden" name="itemid" value="${item.itemId}" /> <!-- Assuming itemId is the correct property name -->
+                                </td>
+                                <td>${item.price} vnd</td>
+                                <td>
+                                    <input type="submit" value="Update quantity" name="btAction" />
+                                    <input type="submit" value="Remove item" name="btAction" />
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <c:set var="sum" value="0" scope="page"/>
-                            <c:forEach items="${cart.items}" var="entry"> <!-- Assume entry is a Map entry -->
-                                <form action="DispatchServlet" method="POST">
-                                <c:set var="item" value="${entry.key}"/> <!-- Key is the ItemsDTO object -->
-                                <c:set var="quantity" value="${entry.value}"/> <!-- Value is the quantity -->
+                        </form>
+                    </c:forEach>
+                    <tr>
+                        <td colspan="3"><strong>Total:</strong></td>
+                        <td colspan="2"><strong>${sum} vnd</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Customer Details</h3>
+            <form action="DispatchServlet" onsubmit="return validateForm()" >
+                <input type="hidden" name="txtTotal" value="${sum}" />
 
-                                <c:set var="totalPrice" value="${item.price * quantity}"/> <!-- Calculate total price for current item -->
-                                <c:set var="sum" value="${sum + totalPrice}" scope="page"/> <!-- Update sum -->
+                <label for="txtPhoneNumber">Phone Number:</label>
+                <input type="tel" id="txtPhoneNumber" name="txtPhoneNumber" /><br>
 
-                                <tr>
-                                    <td>${item.itemName}</td> <!-- Use the correct property name -->
-                                    <td><img src="${item.image}" alt="${item.itemName}" width="100" height="100"/></td> <!-- Use the correct property name -->
-                                    <td>
-                                        <input type="number" name="itemvalue" value="${quantity}" />
-                                        <input type="hidden" name="itemid" value="${item.itemId}" /> <!-- Assuming itemId is the correct property name -->
-                                    </td>
-                                    <td>${item.price} vnd</td>
-                                    <td>
-                                        <input type="submit" value="Update quantity" name="btAction" />
-                                        <input type="submit" value="Remove item" name="btAction" />
-                                    </td>
-                                </tr>
-                                </form>
-                            </c:forEach>
-                            <tr>
-                                <td colspan="3"><strong>Total:</strong></td>
-                                <td colspan="2"><strong>${sum} vnd</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h3>Customer Details</h3>
-                    <label for="txtCheckOutName">Name*:</label>
-                    <input type="text" id="txtCheckOutName" name="txtCheckOutName"/><br>
+                <label for="txtTableNumber">Table Number:</label>
+                <input type="tel" id="txtLandlineNumber" name="txtTableId" /><br>
 
-                    <label for="txtPhoneNumber">Phone Number:</label>
-                    <input type="tel" id="txtPhoneNumber" name="txtPhoneNumber" /><br>
+                <input type="submit" value="Check out" name="btAction" />
+            </form>
 
-                    <label for="txtTableNumber">Table Number:</label>
-                    <input type="tel" id="txtLandlineNumber" name="txtLandlineNumber" /><br>
+            <script>
+                function validateForm() {
+                    var phoneNumber = document.getElementById("txtPhoneNumber").value;
+                    var tableNumber = document.getElementById("txtLandlineNumber").value;
 
-                    <input type="submit" value="Check out" name="btAction" />
-                    <button type="button" onclick="window.location.href = 'home.jsp'">Add more item to Cart</button>
-                
-            </c:if>
-            <c:if test="${empty items}">
-                <c:url var="url" value="DispatchServlet">
-                    <c:param name="btAction" value="Search"/>
-                    <c:param name="txtSearchValue" value=""/>
-                </c:url>
-                <h2>No items in your cart!</h2>
-                <a href="${url}">Click here to return to the shopping page</a>
-            </c:if>
+                    if (phoneNumber === "" && tableNumber === "") {
+                        alert("You must enter either a Phone Number or a Table Number.");
+                        return false; // Ngăn không cho form submit nếu không có giá trị
+                    }
+                    return true; // Cho phép form submit nếu có ít nhất một giá trị
+                }
+            </script>
+
+            <button type="button" onclick="window.location.href = 'home.jsp'">Add more item to Cart</button>
+
         </c:if>
-        <c:if test="${empty cart}">
+        <c:if test="${empty items}">
             <c:url var="url" value="DispatchServlet">
                 <c:param name="btAction" value="Search"/>
                 <c:param name="txtSearchValue" value=""/>
             </c:url>
-            <h2>No cart exists!</h2>
+            <h2>No items in your cart!</h2>
             <a href="${url}">Click here to return to the shopping page</a>
         </c:if>
-    </body>
+    </c:if>
+    <c:if test="${empty cart}">
+        <c:url var="url" value="DispatchServlet">
+            <c:param name="btAction" value="Search"/>
+            <c:param name="txtSearchValue" value=""/>
+        </c:url>
+        <h2>No cart exists!</h2>
+        <a href="${url}">Click here to return to the shopping page</a>
+    </c:if>
+</body>
 </html>
