@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package OderDetail;
+package OrderDetail;
 
 /**
  *
  * @author DELL
  */
-public class OderDetailDTO {
+public class OrderDetailDAO {
     
 }

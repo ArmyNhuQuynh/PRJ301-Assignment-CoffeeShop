@@ -32,6 +32,7 @@ public class DispatchServlet extends HttpServlet {
      private final String ADDTOWISHLIST_CONTROLLER = "AddToWishListServlet";
      private final String VIEWWISHLIST_CONTROLLER = "ViewWishListServlet";
      private final String ORDER_CONTROLLER = "OrderServlet";
+     private final String CHECKSTATUS_CONTROLLER = "CheckStatusServlet";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -68,6 +69,8 @@ public class DispatchServlet extends HttpServlet {
                url = VIEWWISHLIST_CONTROLLER;
            }else if(button.equals("Check out")){
                url = ORDER_CONTROLLER;
+           }else if(button.equals("CheckStatus")){
+               url = CHECKSTATUS_CONTROLLER;
            }
         }finally{
             RequestDispatcher rd = request.getRequestDispatcher(url);

@@ -4,17 +4,16 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/checkOut.jsp</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/OderDetail/OderDetailDTO.java</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Order/OrderDAO.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Order/OrderDTO.java</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/OrderServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/AddToWishListServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/SearchServlet.java</file>
+            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/Cart/ItemsCart.java</file>
+            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/home.jsp</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/AddToCartServlet.java</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/orderSuccess.jsp</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/RemoveFromCartServlet.java</file>
-            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/DispatchServlet.java</file>
+            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/viewWishList.jsp</file>
             <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/LoginServlet.java</file>
+            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/src/java/controller/CheckStatusServlet.java</file>
+            <file>file:/C:/Users/DELL/Documents/GitHub/PRJ301-Assignment-CoffeeShop/web/orderStatus.jsp</file>
         </group>
     </open-files>
 </project-private>

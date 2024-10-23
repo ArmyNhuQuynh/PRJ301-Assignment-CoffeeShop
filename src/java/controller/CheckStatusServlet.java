@@ -5,14 +5,11 @@
  */
 package controller;
 
-import Cart.ItemsCart;
-import Items.ItemsDTO;
 import Order.OrderDAO;
-import OrderDetail.OrderDetailDAO;
+import Order.OrderDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -21,16 +18,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author DELL
  */
-@WebServlet(name = "OrderServlet", urlPatterns = {"/OrderServlet"})
-public class OrderServlet extends HttpServlet {
-    private final String ERROR_PAGE = "error.jsp";
-    private final String ORDERSUCCESS_PAGE = "orderSuccess.jsp";
-    
+@WebServlet(name = "CheckStatusServlet", urlPatterns = {"/CheckStatusServlet"})
+public class CheckStatusServlet extends HttpServlet {
+    private final String ORDERSTATUS_PAGE = "orderStatus.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,43 +37,38 @@ public class OrderServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String orderId = request.getParameter("txtOrderId");
+        String url = ORDERSTATUS_PAGE;
 
-        String phoneNumber = request.getParameter("txtPhoneNumber");
-        String tableId = request.getParameter("txtTableId");
-        String total = request.getParameter("txtTotal");
-        String url = ERROR_PAGE;
-        int orderId = 0;
+        if (orderId == null || orderId.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Please enter an order ID.");
+        } else {
+            try {
+                OrderDAO dao = new OrderDAO();
+                OrderDTO result = dao.CheckStatus(orderId);
 
-        // Kiểm tra tham số đầu vào
-        if (phoneNumber == null || tableId == null || total == null) {
-            request.setAttribute("errorMessage", "Thiếu thông tin trong giỏ hàng.");
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            return;
-        }
-
-        try {
-            OrderDAO orderDao = new OrderDAO();
-            orderId = orderDao.CheckOut(phoneNumber, Integer.parseInt(tableId), Integer.parseInt(total));
-
-            if (orderId > 0) {
-                // Xóa giỏ hàng sau khi thanh toán thành công
-                  request.getSession().invalidate();
-
-                request.setAttribute("orderId", orderId);
-                url = ORDERSUCCESS_PAGE;
+                if (result != null) {
+                    request.setAttribute("ORDER", result);
+                } else {
+                    request.setAttribute("errorMessage", "Order not found.");
+                }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(CheckStatusServlet.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("errorMessage", "Error connecting to the database.");
+            } catch (SQLException ex) {
+                Logger.getLogger(CheckStatusServlet.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("errorMessage", "SQL error occurred.");
             }
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
-            request.setAttribute("errorMessage", "Đã xảy ra lỗi khi xử lý đơn hàng. Vui lòng thử lại."); // Thông báo lỗi cho người dùng
-        } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
         }
+
+        // Retain the order ID input value
+        request.setAttribute("txtOrderId", orderId);
+
+        RequestDispatcher rd = request.getRequestDispatcher(url);
+        rd.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -14,21 +14,21 @@ import java.io.Serializable;
 public class OrderDTO implements Serializable{
     private int OrderId;
     private String OrderDate;
-    private boolean Status;
+    private String Status;
     private int Total;
     private String Phonenumber;
-    private int Tablenumber;
+    private int TableId;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(int OrderId, String OrderDate, boolean Status, int Total, String Phonenumber, int Tablenumber) {
+    public OrderDTO(int OrderId, String OrderDate, String Status, int Total, String Phonenumber, int Tablenumber) {
         this.OrderId = OrderId;
         this.OrderDate = OrderDate;
         this.Status = Status;
         this.Total = Total;
         this.Phonenumber = Phonenumber;
-        this.Tablenumber = Tablenumber;
+        this.TableId = TableId;
     }
 
     public int getOrderId() {
@@ -47,11 +47,11 @@ public class OrderDTO implements Serializable{
         this.OrderDate = OrderDate;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return Status;
     }
 
-    public void setStatus(boolean Status) {
+    public void setStatus(String Status) {
         this.Status = Status;
     }
 
@@ -71,13 +71,12 @@ public class OrderDTO implements Serializable{
         this.Phonenumber = Phonenumber;
     }
 
-    public int getTablenumber() {
-        return Tablenumber;
+    public int getTableId() {
+        return TableId;
     }
 
-    public void setTablenumber(int Tablenumber) {
-        this.Tablenumber = Tablenumber;
+    public void setTableId(int TableId) {
+        this.TableId = TableId;
     }
-    
-    
+
 }

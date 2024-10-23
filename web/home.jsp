@@ -24,6 +24,7 @@
         <form action="DispatchServlet" method="POST">
             <input type="submit" value="View your wish list" name="btAction" />    
         </form>
+         <button type="button" onclick="window.location.href = 'orderStatus.jsp'">View your Order</button>
         <form action="DispatchServlet" method="POST">
             <input type="text" name="txtSearchValue" value="${param.txtSearchValue}" />
             <input type="submit" value="Search" name="btAction" /><br/>

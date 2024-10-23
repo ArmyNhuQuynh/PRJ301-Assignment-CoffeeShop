@@ -64,7 +64,7 @@
                 </tbody>
             </table>
             <h3>Customer Details</h3>
-            <form action="DispatchServlet" onsubmit="return validateForm()" >
+            <form action="DispatchServlet" onsubmit="return validateForm()">
                 <input type="hidden" name="txtTotal" value="${sum}" />
 
                 <label for="txtPhoneNumber">Phone Number:</label>
@@ -79,18 +79,49 @@
             <script>
                 function validateForm() {
                     var phoneNumber = document.getElementById("txtPhoneNumber").value;
-                    var tableNumber = document.getElementById("txtLandlineNumber").value;
+                    var tableId = document.getElementById("txtLandlineNumber").value; // Thay đổi tên biến cho phù hợp
 
-                    if (phoneNumber === "" && tableNumber === "") {
-                        alert("You must enter either a Phone Number or a Table Number.");
-                        return false; // Ngăn không cho form submit nếu không có giá trị
+                    // Kiểm tra tính hợp lệ của số điện thoại
+                    var phoneRegex = /^0\d{9}$/; // Đảm bảo số điện thoại bắt đầu bằng 0 và có 10 chữ số
+
+                    // Kiểm tra tính hợp lệ của ID bàn
+                    var tableIdNum = parseInt(tableId, 10); // Chuyển đổi thành số nguyên để so sánh
+                    var errorMessage = "";
+
+                    // Gán giá trị mặc định cho phoneNumber và tableIdNum nếu không nhập
+                    if (phoneNumber === "") {
+                        phoneNumber = "0"; // Gán giá trị mặc định là 0
                     }
-                    return true; // Cho phép form submit nếu có ít nhất một giá trị
+                    if (tableId === "") {
+                        tableIdNum = 0; // Gán giá trị mặc định là 0
+                    }
+
+                    if (phoneNumber === "0" && tableId === "") {
+                        errorMessage = "Bạn phải nhập ít nhất một số điện thoại hoặc ID bàn.";
+                    } else if (phoneNumber !== "0" && !phoneRegex.test(phoneNumber)) {
+                        errorMessage = "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.";
+                    } else if (tableId !== "" && (isNaN(tableIdNum) || tableIdNum < 0 || tableIdNum > 10)) {
+                        errorMessage = "ID bàn phải là một số từ 0 đến 10.";
+                    }
+
+                    if (errorMessage) {
+                        alert(errorMessage); // Hiển thị thông báo lỗi
+                        return false; // Ngăn không cho gửi biểu mẫu
+                    }
+
+                    // Cập nhật lại giá trị trong trường hợp không có giá trị nhập
+                    document.getElementById("txtPhoneNumber").value = phoneNumber;
+                    document.getElementById("txtLandlineNumber").value = tableIdNum;
+
+                    return true;  // Cho phép form submit nếu có ít nhất một giá trị
                 }
             </script>
 
-            <button type="button" onclick="window.location.href = 'home.jsp'">Add more item to Cart</button>
-
+        <c:url var="urla" value="DispatchServlet">
+            <c:param name="btAction" value="Search"/>
+            <c:param name="txtSearchValue" value=""/>
+        </c:url>
+        <a href="${urla}">Add more item to Cart</a>
         </c:if>
         <c:if test="${empty items}">
             <c:url var="url" value="DispatchServlet">
