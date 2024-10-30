@@ -22,7 +22,7 @@ public class OrderDTO implements Serializable{
     public OrderDTO() {
     }
 
-    public OrderDTO(int OrderId, String OrderDate, String Status, int Total, String Phonenumber, int Tablenumber) {
+    public OrderDTO(int OrderId, String OrderDate, String Status, int Total, String Phonenumber, int TableId) {
         this.OrderId = OrderId;
         this.OrderDate = OrderDate;
         this.Status = Status;

@@ -5,30 +5,23 @@
  */
 package controller;
 
-import Items.ItemsDAO;
-import Items.ItemsDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author DELL
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
-public class SearchServlet extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     private final String HOME_PAGE = "home.jsp";
-    private final String ERROR_PAGE = "error.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,31 +35,15 @@ public class SearchServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String searchValue = request.getParameter("txtSearchValue");
-        String url = ERROR_PAGE;
+        String url = HOME_PAGE;
         try {
-            ItemsDAO dao = new ItemsDAO();
-            if (!searchValue.trim().isEmpty()) {
-                dao.SearchItems(searchValue);
-            }else{
-                dao.ShowAllItemsSearchNull();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
             }
-            List<ItemsDTO> result = dao.getProducts();
-
-            request.setAttribute("product", result);
-
-            url = HOME_PAGE;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-
+            url = "DispatchServlet?btAction=";
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            out.close();
+            response.sendRedirect(url);
         }
     }
 

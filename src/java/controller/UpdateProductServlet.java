@@ -1,34 +1,26 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
 
 import Items.ItemsDAO;
-import Items.ItemsDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.annotation.WebServlet;
 
 /**
  *
- * @author DELL
+ * @author chi
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
-public class SearchServlet extends HttpServlet {
-
-    private final String HOME_PAGE = "home.jsp";
-    private final String ERROR_PAGE = "error.jsp";
+@WebServlet(name = "UpdateProductServlet", urlPatterns = {"/UpdateProductServlet"})
+public class UpdateProductServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,32 +33,26 @@ public class SearchServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String searchValue = request.getParameter("txtSearchValue");
-        String url = ERROR_PAGE;
+        boolean updateSuccess = false;
+          String url = "error.jsp";
         try {
-            ItemsDAO dao = new ItemsDAO();
-            if (!searchValue.trim().isEmpty()) {
-                dao.SearchItems(searchValue);
-            }else{
-                dao.ShowAllItemsSearchNull();
+            int id = Integer.parseInt(request.getParameter("itemId"));
+            String itemName = request.getParameter("itemName");
+            int price = Integer.parseInt(request.getParameter("price"));
+            boolean status = Boolean.parseBoolean(request.getParameter("status"));
+            String image = request.getParameter("image");
+            
+            ItemsDAO d = new ItemsDAO();
+            updateSuccess = d.updateItem(id, itemName, price, status, image);
+            if( updateSuccess == true){
+                url = "DispatchServlet?btAction=Manage+Product";
             }
-            List<ItemsDTO> result = dao.getProducts();
-
-            request.setAttribute("product", result);
-
-            url = HOME_PAGE;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-
-        } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            out.close();
+            Logger.getLogger(UpdateProductServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateProductServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            response.sendRedirect(url);
         }
     }
 

@@ -46,7 +46,7 @@ public class ShowAllItemsServlet extends HttpServlet {
         String url = ERROR_PAGE;
         try {
             ItemsDAO dao = new ItemsDAO();
-            dao.ShowAllItems();
+            dao.ShowAllItemsSearchNull();
             List<ItemsDTO> result = dao.getProducts();
             
             request.setAttribute("product", result);

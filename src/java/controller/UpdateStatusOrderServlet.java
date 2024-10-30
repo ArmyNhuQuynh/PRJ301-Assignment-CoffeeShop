@@ -5,15 +5,14 @@
  */
 package controller;
 
-import Items.ItemsDAO;
-import Items.ItemsDTO;
+import Order.OrderDAO;
+import Order.OrderDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,11 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author DELL
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
-public class SearchServlet extends HttpServlet {
-
-    private final String HOME_PAGE = "home.jsp";
-    private final String ERROR_PAGE = "error.jsp";
+@WebServlet(name = "UpdateStatusOrderServlet", urlPatterns = {"/UpdateStatusOrderServlet"})
+public class UpdateStatusOrderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,37 +35,25 @@ public class SearchServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String searchValue = request.getParameter("txtSearchValue");
-        String url = ERROR_PAGE;
+        String url = "error.jsp";
         try {
-            ItemsDAO dao = new ItemsDAO();
-            if (!searchValue.trim().isEmpty()) {
-                dao.SearchItems(searchValue);
-            }else{
-                dao.ShowAllItemsSearchNull();
-            }
-            List<ItemsDTO> result = dao.getProducts();
-
-            request.setAttribute("product", result);
-
-            url = HOME_PAGE;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
+            String Status = request.getParameter("newStatus");
+            String id = request.getParameter("orderId");
+            OrderDAO d = new OrderDAO();
+            d.updateOrderStatus(id, Status);
+            List<OrderDTO> orders = d.listAllOrders();       
+            request.setAttribute("orders", orders);
+           url = "DispatchServlet?btAction=Manage+Order";
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-
-        } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            out.close();
+            Logger.getLogger(ManagerOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+             request.getRequestDispatcher(url).forward(request, response);
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

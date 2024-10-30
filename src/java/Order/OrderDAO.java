@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import myLib.DBHelper;
 
 /**
@@ -45,7 +47,7 @@ public class OrderDAO implements Serializable {
             if (rs.next()) {
                 orderId = rs.getInt(1);
             }
-
+            
         } finally {
             if (rs != null) {
                 rs.close();
@@ -99,23 +101,113 @@ public class OrderDAO implements Serializable {
         }
         return result;
     }
-    public void addOrderDetail(int orderId, int itemId, int quantity) throws ClassNotFoundException, SQLException {
+  
+     public boolean updateOrderStatus(String orderId, String newStatus) throws ClassNotFoundException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        boolean isUpdated = false;
+
+        try {
+            con = DBHelper.getConnection();
+            String sql = "UPDATE Orders SET Status = ? WHERE OrderID = ?";
+
+            stm = con.prepareStatement(sql);
+            stm.setString(1, newStatus);
+            stm.setString(2, orderId);
+
+            int rowsAffected = stm.executeUpdate();
+            isUpdated = (rowsAffected > 0);
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return isUpdated;
+    }
+
+    public List<OrderDTO> listAllOrders() throws ClassNotFoundException, SQLException {
+        List<OrderDTO> orders = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBHelper.getConnection();
+            String sql = "SELECT OrderID, OrderDate, Status, Total, Phonenumber, TableId FROM Orders";
+            stm = con.prepareStatement(sql);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                int OrderID = rs.getInt("OrderID");
+                String OrderDate = rs.getString("OrderDate");
+                String Status = rs.getString("Status");
+                int Total = rs.getInt("Total");
+                String Phonenumber = rs.getString("Phonenumber");
+                int TableId = rs.getInt("TableId");
+
+                OrderDTO order = new OrderDTO(OrderID, OrderDate, Status, Total, Phonenumber, TableId);
+                orders.add(order);
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return orders;
+    }
+
+ public List<OrderReportDTO> reportOrder(String periodType, String startDate, String endDate) throws ClassNotFoundException, SQLException {
+    List<OrderReportDTO> reportList = new ArrayList<>();
     Connection con = null;
     PreparedStatement stm = null;
+    ResultSet rs = null;
 
     try {
         con = DBHelper.getConnection();
-        String sql = "INSERT INTO OrderDetails (OrderID, ItemID, Quantity) VALUES (?, ?, ?)";
-        
+        String sql;
+
+        if ("day".equalsIgnoreCase(periodType)) {
+            sql = "SELECT OrderDate, COUNT(OrderID) AS OrderCount, SUM(Total) AS TotalRevenue "
+                  + "FROM Orders "
+                  + "WHERE OrderDate BETWEEN ? AND ? "
+                  + "GROUP BY OrderDate "
+                  + "ORDER BY OrderDate";
+        } else if ("month".equalsIgnoreCase(periodType)) {
+            sql = "SELECT FORMAT(OrderDate, 'yyyy-MM') AS OrderMonth, COUNT(OrderID) AS OrderCount, SUM(Total) AS TotalRevenue "
+                  + "FROM Orders "
+                  + "WHERE OrderDate BETWEEN ? AND ? "
+                  + "GROUP BY FORMAT(OrderDate, 'yyyy-MM') "
+                  + "ORDER BY OrderMonth";
+        } else {
+            throw new IllegalArgumentException("Invalid period type. Use 'day' or 'month'.");
+        }
+
         stm = con.prepareStatement(sql);
-        stm.setInt(1, orderId);
-        stm.setInt(2, itemId);
-        stm.setInt(3, quantity);
+        stm.setString(1, startDate);
+        stm.setString(2, endDate);
+        rs = stm.executeQuery();
 
-        int rowsAffected = stm.executeUpdate();
-        System.out.println("Rows affected: " + rowsAffected); // In ra số hàng đã bị ảnh hưởng
+        while (rs.next()) {
+            String period = periodType.equalsIgnoreCase("day") ? rs.getString("OrderDate") : rs.getString("OrderMonth");
+            int orderCount = rs.getInt("OrderCount");
+            int totalRevenue = rs.getInt("TotalRevenue");
 
+            OrderReportDTO report = new OrderReportDTO(period, orderCount, totalRevenue);
+            reportList.add(report);
+        }
     } finally {
+        if (rs != null) {
+            rs.close();
+        }
         if (stm != null) {
             stm.close();
         }
@@ -123,8 +215,7 @@ public class OrderDAO implements Serializable {
             con.close();
         }
     }
+
+    return reportList;
 }
-
-
-
-    }
+  }

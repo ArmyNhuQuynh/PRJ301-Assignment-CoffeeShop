@@ -24,6 +24,7 @@ public class DispatchServlet extends HttpServlet {
      private final String HOME_PAGE = "home.jsp";
      private final String VIEW_YOUR_CART = "checkOut.jsp";
      private final String LOGIN_CONTROLLER = "LoginServlet";
+     private final String LOGOUT_CONTROLLER = "LogoutServlet";
      private final String SHOWALLITEMS_CONTROLLER = "ShowAllItemsServlet";
      private final String SEARCH_CONTROLLER = "SearchServlet";
      private final String ADDTOCART_CONTROLLER = "AddToCartServlet";
@@ -33,6 +34,13 @@ public class DispatchServlet extends HttpServlet {
      private final String VIEWWISHLIST_CONTROLLER = "ViewWishListServlet";
      private final String ORDER_CONTROLLER = "OrderServlet";
      private final String CHECKSTATUS_CONTROLLER = "CheckStatusServlet";
+     private final String MANAGE_PRODUCT_CONTROLLER = "ManagerItemServlet";
+     private final String MANAGE_ORDER_CONTROLLER = "ManagerOrderServlet";
+     private final String MANAGE_REPORT_PAGE = "orderReport.jsp";
+     private final String CREATE_PRODUCT_CONTROLLER = "CreateProductServlet";
+     private final String UPDATE_PRODUCT_CONTROLLER = "UpdateProductServlet";
+     private final String REPORT_ORDER_CONTROLLER = "ReportOrderServlet";
+     private final String UPDATE_ORDER_CONTROLLER = "UpdateStatusOrderServlet";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -49,9 +57,11 @@ public class DispatchServlet extends HttpServlet {
         String button = request.getParameter("btAction");
         String url = HOME_PAGE;
         try {
-           if(button==null){
+           if(button==null || button == ""){
               url = SHOWALLITEMS_CONTROLLER; 
            }else if(button.equals("Login")){
+               url = LOGIN_PAGE;
+           }else if(button.equals("LOGIN")){
                url = LOGIN_CONTROLLER;
            }else if(button.equals("Search")){
                url = SEARCH_CONTROLLER;
@@ -71,6 +81,22 @@ public class DispatchServlet extends HttpServlet {
                url = ORDER_CONTROLLER;
            }else if(button.equals("CheckStatus")){
                url = CHECKSTATUS_CONTROLLER;
+           }else if(button.equals("Manage Product")){
+               url = MANAGE_PRODUCT_CONTROLLER;
+           }else if(button.equals("Manage Order")){
+               url = MANAGE_ORDER_CONTROLLER;
+           }else if(button.equals("Report")){
+               url = MANAGE_REPORT_PAGE;
+           }else if(button.equals("Create Product")){
+               url = CREATE_PRODUCT_CONTROLLER;
+           }else if(button.equals("Update Product")){
+               url = UPDATE_PRODUCT_CONTROLLER;
+           }else if(button.equals("Generate Report")){
+               url = REPORT_ORDER_CONTROLLER;
+           }else if(button.equals("Update Status")){
+               url = UPDATE_ORDER_CONTROLLER;
+           }else if(button.equals("Log out")){
+               url = LOGOUT_CONTROLLER;
            }
         }finally{
             RequestDispatcher rd = request.getRequestDispatcher(url);

@@ -1,34 +1,28 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
 
-import Items.ItemsDAO;
-import Items.ItemsDTO;
+import Order.OrderDAO;
+import Order.OrderReportDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.annotation.WebServlet;
 
 /**
  *
- * @author DELL
+ * @author chi
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/SearchServlet"})
-public class SearchServlet extends HttpServlet {
-
-    private final String HOME_PAGE = "home.jsp";
-    private final String ERROR_PAGE = "error.jsp";
+@WebServlet(name = "ReportOrderServlet", urlPatterns = {"/ReportOrderServlet"})
+public class ReportOrderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,33 +35,23 @@ public class SearchServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String searchValue = request.getParameter("txtSearchValue");
-        String url = ERROR_PAGE;
+        String periodType = request.getParameter("periodType");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
         try {
-            ItemsDAO dao = new ItemsDAO();
-            if (!searchValue.trim().isEmpty()) {
-                dao.SearchItems(searchValue);
-            }else{
-                dao.ShowAllItemsSearchNull();
-            }
-            List<ItemsDTO> result = dao.getProducts();
-
-            request.setAttribute("product", result);
-
-            url = HOME_PAGE;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
+            OrderDAO orderDAO = new OrderDAO();
+            List<OrderReportDTO> reportList = null;
+            reportList = orderDAO.reportOrder(periodType, startDate, endDate);
+            request.setAttribute("reportList", reportList);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShowAllItemsServlet.class.getName()).log(Level.SEVERE, null, ex);
-
-        } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-            out.close();
+            Logger.getLogger(ReportOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ReportOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }  finally {
+            request.getRequestDispatcher("orderReport.jsp").forward(request, response);
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
